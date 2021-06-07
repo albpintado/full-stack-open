@@ -3,13 +3,14 @@ import React from "react";
 const Course = ({ course }) => {
   return (
     <>
-      <Header course={course.name} />
+      <Header courseName={course.name} />
       <Content parts={course.parts} />
+      <Total parts={course.parts} />
     </>
   );
 };
 
-const Header = (props) => <h1>{props.course}</h1>;
+const Header = (props) => <h1>{props.courseName}</h1>;
 
 const Part = (props) => (
   <p>
@@ -21,6 +22,18 @@ const Content = (props) => {
   return props.parts.map((part) => (
     <Part key={part.name} part={part.name} exercises={part.exercises} />
   ));
+};
+
+const Total = (props) => {
+  const total = props.parts.reduce(
+    (accumulator, currentValue) => accumulator + currentValue.exercises,
+    0
+  );
+  return (
+    <p>
+      <strong>Total of {total} exercises</strong>
+    </p>
+  );
 };
 
 const App = () => {

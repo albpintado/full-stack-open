@@ -4,15 +4,20 @@ const Persons = ({ persons }) => {
   return (
     <div>
       {persons.map((person) => (
-        <p key={person.name}>{person.name}</p>
+        <p key={person.name}>
+          {person.name} - {person.number}
+        </p>
       ))}
     </div>
   );
 };
 
 const App = () => {
-  const [persons, setPersons] = useState([{ name: "Arto Hellas" }]);
+  const [persons, setPersons] = useState([
+    { name: "Arto Hellas", number: "691821038" },
+  ]);
   const [newName, setNewName] = useState("");
+  const [newNumber, setNewNumber] = useState("");
 
   const addPerson = (event) => {
     event.preventDefault();
@@ -21,8 +26,9 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    setPersons(persons.concat({ name: newName }));
+    setPersons(persons.concat({ name: newName, number: newNumber }));
     setNewName("");
+    setNewNumber("");
   };
 
   const isNameAlreadyAdded = () => {
@@ -30,17 +36,19 @@ const App = () => {
   };
 
   const nameHandler = (event) => setNewName(event.target.value);
+  const numberHandler = (event) => setNewNumber(event.target.value);
 
   return (
     <div>
       <h2>Phonebook</h2>
       <form>
-        <div>
-          <label htmlFor="name">Name </label>
-          <input name="name" onChange={nameHandler} value={newName} />
-          <button onClick={addPerson}>Add</button>
-        </div>
-        <div></div>
+        <label htmlFor="name">Name </label>
+        <input name="name" onChange={nameHandler} value={newName} />
+        <br />
+        <label htmlFor="number">Number </label>
+        <input name="number" onChange={numberHandler} value={newNumber} />
+        <br />
+        <button onClick={addPerson}>Add</button>
       </form>
       <h2>Numbers</h2>
       <Persons persons={persons} />

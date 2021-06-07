@@ -1,4 +1,12 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+
+const Anecdote = (props) => <p>{props.anecdotes[props.index]}</p>;
+
+const Votes = (props) => <p>Has {props.votes[props.index]} votes</p>;
+
+const Button = (props) => (
+  <button onClick={props.function}>{props.text}</button>
+);
 
 const App = () => {
   const anecdotes = [
@@ -15,27 +23,31 @@ const App = () => {
 
   const [selected, setSelected] = useState(0);
   const [votes, setVotes] = useState(initialVotes);
+  const [mostVotedIndex, setMostVotedIndex] = useState(0);
+
+  useEffect(() => {
+    setMostVotedIndex(votes.indexOf(Math.max(...votes)));
+  }, [votes]);
+
+  const addVote = () => {
+    const copy = [...votes];
+    copy[selected] += 1;
+    setVotes(copy);
+  };
+
+  const selectRandomAnecdote = () =>
+    setSelected(Math.floor(Math.random() * anecdotes.length));
 
   return (
     <div>
-      <p>{anecdotes[selected]}</p>
-      <p>Has {votes[selected]} votes</p>
-      <button
-        onClick={() => {
-          const copy = [...votes];
-          copy[selected] += 1;
-          setVotes(copy);
-        }}
-      >
-        Vote
-      </button>
-      <button
-        onClick={() =>
-          setSelected(Math.floor(Math.random() * anecdotes.length))
-        }
-      >
-        Next anecdote
-      </button>
+      <h1>Anecdote of the day</h1>
+      <Anecdote anecdotes={anecdotes} index={selected} />
+      <Votes votes={votes} index={selected} />
+      <Button function={addVote} text="Vote" />
+      <Button function={selectRandomAnecdote} text="Next anecdote" />
+      <h2>Anecdote with most votes</h2>
+      <Anecdote anecdotes={anecdotes} index={mostVotedIndex} />
+      <Votes votes={votes} index={mostVotedIndex} />
     </div>
   );
 };

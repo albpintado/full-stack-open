@@ -1,4 +1,7 @@
 import React, { useState } from "react";
+import Header from "./components/Header";
+import Search from "./components/Search";
+import Form from "./components/Form";
 
 const Persons = ({ persons }) => {
   return (
@@ -55,20 +58,17 @@ const App = () => {
 
   return (
     <div>
-      <h2>Phonebook</h2>
-      <label htmlFor="search">Search name </label>
-      <input name="search" onChange={personsHandler} />
-      <h2>Add a new one</h2>
-      <form>
-        <label htmlFor="name">Name </label>
-        <input name="name" onChange={nameHandler} value={newName} />
-        <br />
-        <label htmlFor="number">Number </label>
-        <input name="number" onChange={numberHandler} value={newNumber} />
-        <br />
-        <button onClick={addPerson}>Add</button>
-      </form>
-      <h2>Numbers</h2>
+      <Header text="Phonebook" />
+      <Search text="search" function={personsHandler} />
+      <Header text="Add a new one" />
+      <Form
+        functionOne={nameHandler}
+        valueOne={newName}
+        functionTwo={numberHandler}
+        valueTwo={newNumber}
+        functionThree={addPerson}
+      />
+      <Header text="Numbers" />
       <Persons persons={matchedPersons} />
     </div>
   );

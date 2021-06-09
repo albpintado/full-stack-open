@@ -1,30 +1,21 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import Persons from "./components/Persons";
 import Header from "./components/Header";
 import Search from "./components/Search";
 import Form from "./components/Form";
-
-const Persons = ({ persons }) => {
-  return (
-    <div>
-      {persons.map((person) => (
-        <p key={person.name}>
-          {person.name} - {person.number}
-        </p>
-      ))}
-    </div>
-  );
-};
+import personService from "./services/personService";
 
 const App = () => {
-  const [persons, setPersons] = useState([
-    { name: "Arto Hellas", number: "040-123456" },
-    { name: "Ada Lovelace", number: "39-44-5323523" },
-    { name: "Dan Abramov", number: "12-43-234345" },
-    { name: "Mary Poppendieck", number: "39-23-6423122" },
-  ]);
+  const [persons, setPersons] = useState([]);
+  const [matchedPersons, setMatchedPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [matchedPersons, setMatchedPersons] = useState(persons);
+
+  useEffect(() => {
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+  }, []);
+
+  useEffect(() => setMatchedPersons(persons), [persons]);
 
   const addPerson = (event) => {
     event.preventDefault();

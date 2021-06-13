@@ -1,3 +1,4 @@
 app
 no-app
 node_modules
+.env

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import Country from "./components/Country";
+import Input from "./components/Input";
 import countriesServices from "./services/countriesServices";
 
 function App() {
@@ -11,8 +12,6 @@ function App() {
       .getAll()
       .then((initialCountries) => setCountries(initialCountries));
   }, []);
-
-  // useEffect(() => setMatchedCountries(countries), [countries]);
 
   const countryFilter = (event) => {
     return countries.filter(
@@ -26,19 +25,13 @@ function App() {
     setMatchedCountries(countryFilter(event));
   };
 
-  const countriesToShow =
-    matchedCountries.length === 1
-      ? matchedCountries.map((country) => (
-          <Country key={country.name} country={country} />
-        ))
-      : matchedCountries.map((country) => (
-          <p key={country.name}>{country.name}</p>
-        ));
+  const countriesToShow = matchedCountries.map((country) => (
+    <Country key={country.name} country={country} />
+  ));
 
   return (
     <>
-      <label htmlFor="search">Find countries&nbsp;</label>
-      <input name="search" onChange={handleSearch} />
+      <Input label="search" text="Find countries" function={handleSearch} />
       {matchedCountries.length >= 10 ? (
         <p>Too many matches</p>
       ) : (

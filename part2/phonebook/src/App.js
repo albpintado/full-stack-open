@@ -27,6 +27,7 @@ const App = () => {
     setMatchedPersons(
       matchedPersons.concat({ name: newName, number: newNumber })
     );
+    personService.addPerson({ name: newName, number: newNumber });
     setNewName("");
     setNewNumber("");
     console.log(persons);

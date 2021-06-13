@@ -6,6 +6,11 @@ const getAll = () => {
   return request.then((response) => response.data);
 };
 
-const personService = { getAll };
+const addPerson = (person) => {
+  axios.post(baseUrl, person);
+  return;
+};
+
+const personService = { getAll, addPerson };
 
 export default personService;

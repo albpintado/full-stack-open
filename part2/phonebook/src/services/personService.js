@@ -17,10 +17,11 @@ const deletePerson = (personId) => {
 };
 
 const updatePhone = (personId, personName, personNumber) => {
-  axios.put(`${baseUrl}/${personId}`, {
+  const request = axios.put(`${baseUrl}/${personId}`, {
     name: personName,
     number: personNumber,
   });
+  return request.then((response) => response.data);
 };
 
 const personService = { getAll, addPerson, deletePerson, updatePhone };

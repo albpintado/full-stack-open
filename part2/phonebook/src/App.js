@@ -12,7 +12,10 @@ const App = () => {
   const [matchedPersons, setMatchedPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
-  const [notificationMessage, setNotificationMessage] = useState(null);
+  const [message, setMessage] = useState({
+    text: null,
+    class: "",
+  });
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -37,9 +40,15 @@ const App = () => {
       .getAll()
       .then((initialPersons) => setPersons(initialPersons))
       .then(() => {
-        setNotificationMessage(`Added ${newName}`);
+        setMessage({
+          text: `Added ${newName}`,
+          class: "info",
+        });
         setTimeout(() => {
-          setNotificationMessage(null);
+          setMessage({
+            text: null,
+            class: "",
+          });
         }, 3000);
       });
     setNewName("");
@@ -58,7 +67,18 @@ const App = () => {
 
   const updateNumber = () => {
     const person = persons.find((person) => person.name === newName);
-    personService.updatePhone(person.id, newName, newNumber);
+    personService.updatePhone(person.id, newName, newNumber).catch(() => {
+      setMessage({
+        text: `Information of ${newName} has already been removed from server`,
+        class: "error",
+      });
+      setTimeout(() => {
+        setMessage({
+          text: null,
+          class: "",
+        });
+      }, 3000);
+    });
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
   };
 
@@ -78,7 +98,7 @@ const App = () => {
       <Header text="Phonebook" />
       <Search text="search" function={personsHandler} />
       <Header text="Add a new one" />
-      <Notification message={notificationMessage} />
+      <Notification message={message} />
       <Form
         functionOne={nameHandler}
         valueOne={newName}

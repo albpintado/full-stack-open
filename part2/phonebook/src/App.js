@@ -20,7 +20,13 @@ const App = () => {
   const addPerson = (event) => {
     event.preventDefault();
     if (isNameAlreadyAdded()) {
-      alert(`${newName} is already added to phonebook`);
+      if (
+        window.confirm(
+          `${newName} is already added to the phonebook, replace the old number with the new one?`
+        )
+      ) {
+        updateNumber();
+      }
       return;
     }
     personService.addPerson({ name: newName, number: newNumber });
@@ -36,8 +42,13 @@ const App = () => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
   };
 
-  const isNameAlreadyAdded = () => {
-    return persons.find((person) => person.name === newName);
+  const isNameAlreadyAdded = () =>
+    persons.find((person) => person.name === newName);
+
+  const updateNumber = () => {
+    const person = persons.find((person) => person.name === newName);
+    personService.updatePhone(person.id, newName, newNumber);
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   };
 
   const nameHandler = (event) => setNewName(event.target.value);

@@ -16,6 +16,13 @@ const deletePerson = (personId) => {
   return;
 };
 
-const personService = { getAll, addPerson, deletePerson };
+const updatePhone = (personId, personName, personNumber) => {
+  axios.put(`${baseUrl}/${personId}`, {
+    name: personName,
+    number: personNumber,
+  });
+};
+
+const personService = { getAll, addPerson, deletePerson, updatePhone };
 
 export default personService;

@@ -23,14 +23,17 @@ const App = () => {
       alert(`${newName} is already added to phonebook`);
       return;
     }
-    setPersons(persons.concat({ name: newName, number: newNumber }));
-    setMatchedPersons(
-      matchedPersons.concat({ name: newName, number: newNumber })
-    );
     personService.addPerson({ name: newName, number: newNumber });
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
     setNewName("");
     setNewNumber("");
-    console.log(persons);
+  };
+
+  const deletePerson = (person) => {
+    if (window.confirm(`Delete ${person.name}?`)) {
+      personService.deletePerson(person.id);
+    }
+    personService.getAll().then((initialPersons) => setPersons(initialPersons));
   };
 
   const isNameAlreadyAdded = () => {
@@ -61,7 +64,7 @@ const App = () => {
         functionThree={addPerson}
       />
       <Header text="Numbers" />
-      <Persons persons={matchedPersons} />
+      <Persons persons={matchedPersons} deleteFunction={deletePerson} />
     </div>
   );
 };

@@ -11,6 +11,11 @@ const addPerson = (person) => {
   return;
 };
 
-const personService = { getAll, addPerson };
+const deletePerson = (personId) => {
+  axios.delete(`${baseUrl}/${personId}`);
+  return;
+};
+
+const personService = { getAll, addPerson, deletePerson };
 
 export default personService;

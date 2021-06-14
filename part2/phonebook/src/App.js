@@ -3,13 +3,16 @@ import Persons from "./components/Persons";
 import Header from "./components/Header";
 import Search from "./components/Search";
 import Form from "./components/Form";
+import Notification from "./components/Notification";
 import personService from "./services/personService";
+import "./index.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
   const [matchedPersons, setMatchedPersons] = useState([]);
   const [newName, setNewName] = useState("");
   const [newNumber, setNewNumber] = useState("");
+  const [notificationMessage, setNotificationMessage] = useState(null);
 
   useEffect(() => {
     personService.getAll().then((initialPersons) => setPersons(initialPersons));
@@ -30,7 +33,15 @@ const App = () => {
       return;
     }
     personService.addPerson({ name: newName, number: newNumber });
-    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+    personService
+      .getAll()
+      .then((initialPersons) => setPersons(initialPersons))
+      .then(() => {
+        setNotificationMessage(`Added ${newName}`);
+        setTimeout(() => {
+          setNotificationMessage(null);
+        }, 3000);
+      });
     setNewName("");
     setNewNumber("");
   };
@@ -67,6 +78,7 @@ const App = () => {
       <Header text="Phonebook" />
       <Search text="search" function={personsHandler} />
       <Header text="Add a new one" />
+      <Notification message={notificationMessage} />
       <Form
         functionOne={nameHandler}
         valueOne={newName}

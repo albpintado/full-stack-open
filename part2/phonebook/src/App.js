@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import Persons from "./components/Persons";
-import Header from "./components/Header";
+import HeaderOne from "./components/HeaderOne";
+import HeaderTwo from "./components/HeaderTwo";
 import Search from "./components/Search";
 import Form from "./components/Form";
 import Notification from "./components/Notification";
 import personService from "./services/personService";
-import "./index.css";
+import "./App.css";
 
 const App = () => {
   const [persons, setPersons] = useState([]);
@@ -18,7 +19,7 @@ const App = () => {
   });
 
   useEffect(() => {
-    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+    personService.getAll().then((initialPersons) => setPersons(initialPersons)).catch((error) => console.log("Error: ", error.message));
   }, []);
 
   useEffect(() => setMatchedPersons(persons), [persons]);
@@ -94,10 +95,12 @@ const App = () => {
   };
 
   return (
-    <div>
-      <Header text="Phonebook" />
-      <Search text="search" function={personsHandler} />
-      <Header text="Add a new one" />
+    <>
+      <header>
+        <HeaderOne text="Phonebook" />
+        <Search text="search" function={personsHandler} />
+      </header>
+      <HeaderTwo text="Add a person to phonebook" />
       <Notification message={message} />
       <Form
         functionOne={nameHandler}
@@ -106,9 +109,9 @@ const App = () => {
         valueTwo={newNumber}
         functionThree={addPerson}
       />
-      <Header text="Numbers" />
+      <HeaderTwo text="Persons in phonebook" />
       <Persons persons={matchedPersons} deleteFunction={deletePerson} />
-    </div>
+    </>
   );
 };
 

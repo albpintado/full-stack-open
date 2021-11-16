@@ -1,4 +1,8 @@
 import axios from "axios";
+// Dev env
+// const baseUrl = "http://localhost:3001/api/persons";
+
+// Prod env
 const baseUrl = "https://cryptic-river-73645.herokuapp.com/api/persons";
 
 const getAll = () => {

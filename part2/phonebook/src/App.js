@@ -46,6 +46,10 @@ const App = () => {
   }
 
   const addPerson = () => {
+    if (newPerson.name === "" || newPerson.number === "") {
+      handleMessage("Please, fill the two inputs before add the entry", "error");
+      return;
+    }
     personService.addPerson({ name: newPerson.name, number: newPerson.number });
     setPersons([...persons, { name: newPerson.name, number: newPerson.number }]);
     handleMessage(`Added ${newPerson.name}`, "info");

@@ -12,7 +12,7 @@ const searchPersons = (person, filterQuery) => {
   return person.name.toLowerCase().includes(filterQuery.toLowerCase());
 };
 
-const updateWindowConfirmation = (newPerson) => window.confirm(
+const windowConfirmForUpdate = (newPerson) => window.confirm(
   `${newPerson.name} is already added to the phonebook, replace the old number with the new one?`
   );
 
@@ -34,9 +34,15 @@ const App = () => {
   const isNameAlreadyAdded = () =>
     persons.find((person) => person.name === newPerson.name) ? true : false;
 
-  const addOrUptatePerson = (event) => {
+  const addOrUpdatePerson = (event) => {
     event.preventDefault();
-    isNameAlreadyAdded() && updateWindowConfirmation(newPerson.name) ? updateNumber() : addPerson();
+    if (isNameAlreadyAdded()) {
+      if (windowConfirmForUpdate(newPerson)) {
+      updateNumber();
+      }
+    } else {
+      addPerson();
+    }
   }
 
   const addPerson = () => {
@@ -56,11 +62,13 @@ const App = () => {
   };
 
   const updateNumber = () => {
-    const person = persons.find((person) => person.name === newPerson.name);
-    personService.updatePhone(person.id, newPerson.name, newPerson.number).catch(() => {
-      handleMessage(`Information of ${newPerson.name} has been updated from server`, "info");
-    });
-    personService.getAll().then((initialPersons) => setPersons(initialPersons));
+    const personToUpdate = persons.find((person) => person.name === newPerson.name);
+    const personIndex = persons.findIndex(person => person.name === personToUpdate.name)
+    personService.updatePhone(personToUpdate.id, newPerson.name, newPerson.number);
+    handleMessage(`Information of ${newPerson.name} has been updated from server`, "info");
+    const newPersons = [...persons];
+    newPersons[personIndex].number = newPerson.number;
+      setPersons(newPersons);
   };
 
   const handleMessage = (messageText, messageClass) => {
@@ -83,7 +91,7 @@ const App = () => {
       <Form
         newPerson={newPerson}
         setNewPerson={setNewPerson}
-        onSubmit={addOrUptatePerson}
+        onSubmit={addOrUpdatePerson}
       />
       <Persons persons={filteredPersons} deleteFunction={deletePerson} />
     </>

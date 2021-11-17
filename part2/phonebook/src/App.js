@@ -49,10 +49,10 @@ const App = () => {
   const deletePerson = (person) => {
     if (window.confirm(`Delete ${person.name}?`)) {
       personService.deletePerson(person.id);
+      const newPersons = persons.filter(personFromState => personFromState.id !== person.id);
+      setPersons(newPersons);
+      handleMessage(`Information of ${person.name} has already been removed from server`, "error");
     }
-    const newPersons = persons.filter(personFromState => personFromState.id !== person.id);
-    setPersons(newPersons);
-    handleMessage(`Information of ${newPerson.name} has already been removed from server`, "error");
   };
 
   const updateNumber = () => {

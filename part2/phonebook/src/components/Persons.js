@@ -1,6 +1,9 @@
+import HeaderTwo from "../components/HeaderTwo";
+
 const Persons = ({ persons, deleteFunction }) => {
   return (
-    <div>
+    <section>
+      <HeaderTwo text="Persons in phonebook" />
       {persons.map((person) => (
         <article key={person.name} className="person-card">
           <p className="person-text">
@@ -9,7 +12,7 @@ const Persons = ({ persons, deleteFunction }) => {
         <button onClick={() => deleteFunction(person)}>Delete</button>
         </article>
       ))}
-    </div>
+    </section>
   );
 };
 

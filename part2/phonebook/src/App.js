@@ -34,19 +34,8 @@ const App = () => {
   const isNameAlreadyAdded = () =>
     persons.find((person) => person.name === newPerson.name) ? true : false;
 
-  const addOrUpdatePerson = (event) => {
-    event.preventDefault();
-    if (isNameAlreadyAdded()) {
-      if (windowConfirmForUpdate(newPerson)) {
-      updateNumber();
-      }
-    } else {
-      addPerson();
-    }
-  }
-
   const addPerson = () => {
-    if (newPerson.name === "" || newPerson.number === "") {
+    if (!newPerson.name || !newPerson.number) {
       handleMessage("Please, fill the two inputs before add the entry", "error");
       return;
     }
@@ -54,6 +43,16 @@ const App = () => {
     setPersons([...persons, { name: newPerson.name, number: newPerson.number }]);
     handleMessage(`Added ${newPerson.name}`, "info");
     setNewPerson({"name": "", "number": ""});
+  };
+
+  const updateNumber = () => {
+    const personToUpdate = persons.find((person) => person.name === newPerson.name);
+    const personIndex = persons.findIndex(person => person.name === personToUpdate.name)
+    personService.updatePhone(personToUpdate.id, newPerson.name, newPerson.number);
+    handleMessage(`Information of ${newPerson.name} has been updated from server`, "info");
+    const newPersons = [...persons];
+    newPersons[personIndex].number = newPerson.number;
+    setPersons(newPersons);
   };
 
   const deletePerson = (person) => {
@@ -65,15 +64,31 @@ const App = () => {
     }
   };
 
-  const updateNumber = () => {
-    const personToUpdate = persons.find((person) => person.name === newPerson.name);
-    const personIndex = persons.findIndex(person => person.name === personToUpdate.name)
-    personService.updatePhone(personToUpdate.id, newPerson.name, newPerson.number);
-    handleMessage(`Information of ${newPerson.name} has been updated from server`, "info");
-    const newPersons = [...persons];
-    newPersons[personIndex].number = newPerson.number;
-      setPersons(newPersons);
-  };
+  const areValidInputs = () => {
+    if (newPerson.name.length < 3) {
+      handleMessage("The name must have at least 3 characters", "error");
+      return false;
+    } else if (newPerson.number.length < 8) {
+      handleMessage("The number must have at least 8 characters", "error");
+      return false;
+    } else {
+      return true;
+    }
+  }
+
+  const addOrUpdatePerson = (event) => {
+    event.preventDefault();
+    if (!areValidInputs()) {
+      return;
+    };
+    if (isNameAlreadyAdded()) {
+      if (windowConfirmForUpdate(newPerson)) {
+      updateNumber();
+      }
+    } else {
+      addPerson();
+    }
+  }
 
   const handleMessage = (messageText, messageClass) => {
     setMessage({

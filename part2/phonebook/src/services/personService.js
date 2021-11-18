@@ -1,9 +1,9 @@
 import axios from "axios";
 // Dev env
-const baseUrl = "http://localhost:3001/api/persons";
+// const baseUrl = "http://localhost:3001/api/persons";
 
 // Prod env
-// const baseUrl = "https://cryptic-river-73645.herokuapp.com/api/persons";
+const baseUrl = "https://cryptic-river-73645.herokuapp.com/api/persons";
 
 const getAll = () => {
   const request = axios.get(baseUrl);

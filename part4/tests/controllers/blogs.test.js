@@ -65,7 +65,7 @@ describe("API", () => {
     expect(newBlogFromDb.title).toContain(newBlogObject.title);
   });
 
-  test.only("check validity of likes property", async () => {
+  test("check validity of likes property", async () => {
     const newBlogObject = {
       title: "Blog de prueba",
       author: "Pepe Cuenca",
@@ -77,6 +77,32 @@ describe("API", () => {
     const blogsInDb = await api.get("/api/blogs");
     expect(blogsInDb.body[2].likes).toBeDefined();
     expect(blogsInDb.body[2].likes).toBe(0);
+  });
+
+  test.only("throws 400 status when title or url are missing", async () => {
+    const newBlogObject = {
+      title: "New blog",
+      author: "Someone",
+      url: "new-blog",
+      id: "61968bf0e763e37ca419dbff",
+    };
+    const newBlogObjectWithoutTitle = {
+      author: "Pepe Cuenca",
+      url: "blog-de-prueba",
+      id: "61968bf0e763e37ca419dbff",
+    };
+    const newBlogObjectWithoutUrl = {
+      title: "Blog de prueba",
+      author: "Pepe Cuenca",
+      id: "61968bf0e763e37ca419dbff",
+    };
+
+    await api.post("/api/blogs").send(newBlogObject).expect(201);
+    await api.post("/api/blogs").send(newBlogObjectWithoutTitle).expect(400);
+    await api.post("/api/blogs").send(newBlogObjectWithoutUrl).expect(400);
+
+    const blogsInDb = await api.get("/api/blogs");
+    expect(blogsInDb.body).toHaveLength(3);
   });
 
   afterAll(() => {

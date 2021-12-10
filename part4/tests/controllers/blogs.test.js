@@ -38,6 +38,12 @@ describe("API", () => {
     expect(result.body).toHaveLength(2);
   });
 
+  test.only("check that id property exists", async () => {
+    const result = await api.get("/api/blogs");
+    const firstBlog = result.body[0];
+    expect(firstBlog.id).toBeDefined();
+  });
+
   afterAll(() => {
     mongoose.connection.close();
   });

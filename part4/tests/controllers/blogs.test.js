@@ -30,18 +30,39 @@ describe("API", () => {
     await Promise.all(promiseArray);
   });
   test.only("get the two notes in DB in JSON", async () => {
-    const result = await api
+    const blogsInDb = await api
       .get("/api/blogs")
       .expect(200)
       .expect("Content-Type", /application\/json/);
 
-    expect(result.body).toHaveLength(2);
+    expect(blogsInDb.body).toHaveLength(2);
   });
 
   test.only("check that id property exists", async () => {
-    const result = await api.get("/api/blogs");
-    const firstBlog = result.body[0];
+    const blogsInDb = await api.get("/api/blogs");
+    const firstBlog = blogsInDb.body[0];
     expect(firstBlog.id).toBeDefined();
+  });
+
+  test.only("create a new blog", async () => {
+    const newBlogObject = {
+      title: "Blog de prueba",
+      author: "Pepe Cuenca",
+      url: "blog-de-prueba",
+      likes: 0,
+      id: "61968bf0e763e37ca419dbff",
+    };
+    await api
+      .post("/api/blogs")
+      .send(newBlogObject)
+      .expect(201)
+      .expect("Content-Type", /application\/json/);
+
+    const blogsInDb = await api.get("/api/blogs");
+    const newBlogFromDb = blogsInDb.body[2];
+
+    expect(blogsInDb.body).toHaveLength(3);
+    expect(newBlogFromDb.title).toContain(newBlogObject.title);
   });
 
   afterAll(() => {

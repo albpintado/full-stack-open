@@ -1,13 +1,13 @@
 const listHelper = require("../../src/utils/list_helper");
 
-test("dummy returns one", () => {
+test.skip("dummy returns one", () => {
   const blogs = [];
 
   const result = listHelper.dummy(blogs);
   expect(result).toBe(1);
 });
 
-describe("total likes", () => {
+describe.skip("total likes", () => {
   const listWithOneBlog = [
     {
       _id: "5a422aa71b54a676234d17f8",
@@ -80,7 +80,7 @@ describe("total likes", () => {
     expect(result).toBe(36);
   });
 
-  describe("post with most likes", () => {
+  describe.skip("post with most likes", () => {
     test("should be third of the list", () => {
       const result = listHelper.favoriteBlog(listWithMoreBlogs);
       const blogWithMostLikesInList = {

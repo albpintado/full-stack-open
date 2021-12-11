@@ -28,7 +28,7 @@ beforeEach(async () => {
 });
 
 describe("API", () => {
-  test("get the two notes in DB in JSON", async () => {
+  test("get the two blogs in DB in JSON", async () => {
     const blogsInDb = await api
       .get("/api/blogs")
       .expect(200)
@@ -104,17 +104,29 @@ describe("API", () => {
     expect(blogsInDb.body).toHaveLength(3);
   });
 
-  test.only("succesfully delete a blog", async () => {
+  test("succesfully delete a blog", async () => {
     const blogsAtStart = await api.get("/api/blogs");
-    const noteToDelete = blogsAtStart.body[0];
+    const blogToDelete = blogsAtStart.body[0];
 
-    await api.del(`/api/blogs/${noteToDelete.id}`).expect(204);
+    await api.del(`/api/blogs/${blogToDelete.id}`).expect(204);
 
     const getAtEndResponse = await api.get("/api/blogs");
     const blogsAtEnd = getAtEndResponse.body.map((blog) => blog.title);
 
     expect(blogsAtEnd).toHaveLength(1);
     expect(blogsAtEnd).not.toContain("ABCDEF");
+  });
+
+  test.only("increase likes by 1", async () => {
+    const blogsAtStart = await api.get("/api/blogs");
+    const blogToUpdate = blogsAtStart.body[0];
+
+    await api.put(`/api/blogs/${blogToUpdate.id}`);
+
+    const blogsAtEnd = await api.get("/api/blogs");
+    const blogUpdated = blogsAtEnd.body[0];
+
+    expect(blogUpdated.likes).toBe(1);
   });
 
   afterAll(() => {

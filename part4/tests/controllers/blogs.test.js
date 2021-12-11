@@ -11,24 +11,23 @@ const initialBlogs = [
     author: "Pepe Cuenca",
     url: "blog-de-prueba",
     likes: 0,
-    id: "61968bf0e763e37ca419dbff",
   },
   {
     title: "ABCDEF",
     author: "Alberto",
     url: "abcdef",
     likes: 0,
-    id: "61a922708e8122081d28451b",
   },
 ];
 
+beforeEach(async () => {
+  await Blog.deleteMany({});
+  const blogsToSave = initialBlogs.map((blog) => new Blog(blog));
+  const promiseArray = blogsToSave.map((blog) => blog.save());
+  await Promise.all(promiseArray);
+});
+
 describe("API", () => {
-  beforeEach(async () => {
-    await Blog.deleteMany({});
-    const blogsToSave = initialBlogs.map((blog) => new Blog(blog));
-    const promiseArray = blogsToSave.map((blog) => blog.save());
-    await Promise.all(promiseArray);
-  });
   test("get the two notes in DB in JSON", async () => {
     const blogsInDb = await api
       .get("/api/blogs")
@@ -79,7 +78,7 @@ describe("API", () => {
     expect(blogsInDb.body[2].likes).toBe(0);
   });
 
-  test.only("throws 400 status when title or url are missing", async () => {
+  test("throws 400 status when title or url are missing", async () => {
     const newBlogObject = {
       title: "New blog",
       author: "Someone",
@@ -103,6 +102,19 @@ describe("API", () => {
 
     const blogsInDb = await api.get("/api/blogs");
     expect(blogsInDb.body).toHaveLength(3);
+  });
+
+  test.only("succesfully delete a blog", async () => {
+    const blogsAtStart = await api.get("/api/blogs");
+    const noteToDelete = blogsAtStart.body[0];
+
+    await api.del(`/api/blogs/${noteToDelete.id}`).expect(204);
+
+    const getAtEndResponse = await api.get("/api/blogs");
+    const blogsAtEnd = getAtEndResponse.body.map((blog) => blog.title);
+
+    expect(blogsAtEnd).toHaveLength(1);
+    expect(blogsAtEnd).not.toContain("ABCDEF");
   });
 
   afterAll(() => {

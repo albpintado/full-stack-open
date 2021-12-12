@@ -4,6 +4,9 @@ const express = require("express");
 const blogsRouter = require("./controllers/blogs");
 const config = require("./utils/config");
 const logger = require("./utils/logger");
+require("express-async-errors");
+const usersRouter = require("./controllers/users");
+const middleware = require("./utils/middleware");
 
 const app = express();
 
@@ -16,10 +19,15 @@ mongoose
     logger.error(`Error connecting to ${mongoUrl} DB: ${error.message}`)
   );
 
+app.use(middleware.requestLogger);
 app.use(cors());
 app.use(express.static("build"));
 app.use(express.json());
 
 app.use("/api/blogs", blogsRouter);
+app.use("/api/users", usersRouter);
+
+app.use(middleware.unknownEndpoint);
+app.use(middleware.errorHandler);
 
 module.exports = app;

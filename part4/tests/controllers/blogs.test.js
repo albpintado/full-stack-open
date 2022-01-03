@@ -117,7 +117,7 @@ describe("API", () => {
     expect(blogsAtEnd).not.toContain("ABCDEF");
   });
 
-  test.only("increase likes by 1", async () => {
+  test("increase likes by 1", async () => {
     const blogsAtStart = await api.get("/api/blogs");
     const blogToUpdate = blogsAtStart.body[0];
 
@@ -128,8 +128,7 @@ describe("API", () => {
 
     expect(blogUpdated.likes).toBe(1);
   });
-
-  afterAll(() => {
-    mongoose.connection.close();
-  });
+});
+afterAll(() => {
+  mongoose.connection.close();
 });

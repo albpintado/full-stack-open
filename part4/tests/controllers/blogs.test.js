@@ -2,8 +2,24 @@ const mongoose = require("mongoose");
 const supertest = require("supertest");
 const app = require("../../src/app");
 const Blog = require("../../src/models/Blog");
+const User = require("../../src/models/User");
 
 const api = supertest(app);
+
+const initialUsers = [
+  {
+    username: "alberto",
+    name: "Alberto",
+    passwordHash:
+      "$2a$10$B7CP18PUpvtaOpULYy0jVunXgZTvPi8DXuQZY1XClJ2gJ4wApo/GO",
+  },
+  {
+    username: "luis",
+    name: "Luis",
+    passwordHash:
+      "$2a$10$NMrYVG76nU5ypHsPPa.pK.1b44k89k6L2B8fRrHvMKXwIVhLE9tXm",
+  },
+];
 
 const initialBlogs = [
   {
@@ -21,6 +37,11 @@ const initialBlogs = [
 ];
 
 beforeEach(async () => {
+  await User.deleteMany({});
+  const usersToSave = initialUsers.map((user) => new User(user));
+  const promiseArrayOfUsers = usersToSave.map((user) => user.save());
+  await Promise.all(promiseArrayOfUsers);
+
   await Blog.deleteMany({});
   const blogsToSave = initialBlogs.map((blog) => new Blog(blog));
   const promiseArray = blogsToSave.map((blog) => blog.save());
@@ -62,6 +83,7 @@ describe("API", () => {
 
     expect(blogsInDb.body).toHaveLength(3);
     expect(newBlogFromDb.title).toContain(newBlogObject.title);
+    expect(newBlogFromDb.user.username).toContain("alberto");
   });
 
   test("check validity of likes property", async () => {
